@@ -1,0 +1,212 @@
+---
+title: "_Thryophilus sernai_ static occupancy model, variable selection"
+author: "Diego J. Lizcano, Angelica Diaz, et al."
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Read packages
+
+```{r read_pkg, warning=FALSE, message=FALSE}
+library(sf) # new spatial package
+library(unmarked)
+library(corrplot)
+library(raster)
+library(tmap)
+library (mapview)
+library(corrplot)
+
+```
+
+
+# Read data
+
+```{r data_read, message=FALSE, warning=FALSE}
+
+covariables <- read.csv("C:/Users/diego.lizcano/Box Sync/CodigoR/Angelica_IAvH/data/matriz_covariables_full.csv", 
+                        sep = ";",
+                        header = T
+                        )
+
+
+covs_obs_hr <- as.matrix(read.csv("C:/Users/diego.lizcano/Box Sync/CodigoR/Angelica_IAvH/data/occu/cov_humedad_estanzarizada.txt", 
+                      sep = "",
+                      header = T))
+
+colnames(covs_obs_hr) <- NULL
+rownames(covs_obs_hr) <- NULL
+
+location <- read.csv("C:/Users/diego.lizcano/Box Sync/CodigoR/Angelica_IAvH/data/occu/Coordenadas ituango.txt", 
+                      sep = "",
+                      header = T)
+  
+centroide <- c(mean(location[,2]), mean(location[,3]))
+coordinates(location) <- ~Lon+Lat
+proj4string(location) <- CRS("+proj=longlat +datum=WGS84")
+
+covs_obs_t <- as.matrix(read.csv("C:/Users/diego.lizcano/Box Sync/CodigoR/Angelica_IAvH/data/occu/cov_temperatura_estandarizada.txt", 
+                      sep = "",
+                      header = T)) 
+
+colnames(covs_obs_t) <- NULL
+rownames(covs_obs_t) <- NULL
+
+conteos <- read.csv("C:/Users/diego.lizcano/Box Sync/CodigoR/Angelica_IAvH/data/Ituango_final_conteos.txt", 
+                    sep = "", 
+                    header = T)
+
+colnames(conteos) <- NULL
+rownames(conteos) <- NULL
+
+ventana <- st_read("C:/Users/diego.lizcano/Box Sync/CodigoR/Angelica_IAvH/shp/Unidad_analisis.shp")
+
+
+location_sf <-  st_as_sf(location)  %>% st_transform(., crs = 4326)
+              
+ventana_wgs <-  st_transform(ventana, crs = 4326)
+
+
+# ventana_wgs <- spTransform(ventana, CRS("+proj=longlat +datum=WGS84"))
+# library(rgdal)
+# data.shape<-readOGR(dsn="C:/Users/diego.lizcano/Box Sync/CodigoR/Angelica_IAvH/shp/Unidad_analisis.shp")
+
+```
+
+# Basic map of points
+##### bird image from http://www.hbw.com/species/antioquia-wren-thryophilus-sernai 
+```{r plot_mapwiew, }
+m <- mapview(ventana_wgs, # all_kud_sp1_geo, # loc or cross
+        alpha.regions = 0.4, aplha = 1, # transparencia
+        legend = TRUE, # all_kud2_sp1_geo file with cross
+        map.types = "Esri.WorldImagery",
+        width = 340, height = 220) + mapview(location_sf, zcol = "Localidad")
+
+addLogo(m, "http://www.hbw.com/sites/default/files/styles/large_a/public/figures/17_thryothorus_sernai.jpg",
+        position = "bottomleft",
+        offset.x = 5,
+        offset.y = 40,
+        width = 250,
+        height= 170
+        )
+
+
+```
+
+# View correlation between variables
+
+```{r corrplot}
+M <- cor(covariables[,-1])
+corrplot(M)
+
+```
+
+
+#Put unmarked data frame
+
+```{r unmarked_object}
+
+pferUMF <- unmarkedFrameOccu((conteos[,-1]),
+              obsCovs = list(hr=covs_obs_hr[,c(1:20)],
+                            t=covs_obs_t[,c(1:20)]))
+plot(pferUMF)
+# add some fake covariates for illustration
+siteCovs(pferUMF) <- scale(covariables[,-1])
+
+```
+
+
+#Make models
+### hr is humedad relativa
+### t is temperature
+```{r models}
+
+
+# detection and occupancy in that order.
+fm1 <- occu(~ 1 ~ 1, pferUMF)
+fm2 <- occu(~ hr ~ 1, pferUMF)
+fm3 <- occu(~ hr ~ NDVI, pferUMF)
+fm4 <- occu(~ hr ~ Altura, pferUMF)
+fm5 <- occu(~ hr ~ Cobertura, pferUMF)
+fm6 <- occu(~ hr ~ Precipitacion, pferUMF)
+fm7 <- occu(~ hr ~ Cuarto.seco, pferUMF)
+fm8 <- occu(~ hr ~ Cuarto.humedo, pferUMF)
+fm9 <- occu(~ hr ~ Mes.humedo, pferUMF)
+fm10 <- occu(~ hr ~ Mes.seco, pferUMF)
+fm11 <- occu(~ hr ~ Estacionalidad, pferUMF)
+fm12 <- occu(~ hr ~ Cobertura.prom.250, pferUMF)
+fm13 <- occu(~ hr ~ Cobertura.sd.250, pferUMF)
+fm14 <- occu(~ hr ~ H.index.250, pferUMF)
+fm15 <- occu(~ hr ~ Altura.prom.250, pferUMF)
+
+fm16 <- occu(~ 1 ~ Mes.seco, pferUMF)
+fm17 <- occu(~ t ~ 1, pferUMF)
+fm18 <- occu(~ t ~ NDVI, pferUMF)
+fm19 <- occu(~ t ~ Altura, pferUMF)
+fm20 <- occu(~ t ~ Cobertura, pferUMF)
+fm21 <- occu(~ t ~ Precipitacion, pferUMF)
+fm22 <- occu(~ t ~ Cuarto.seco, pferUMF)
+fm23 <- occu(~ t ~ Cuarto.humedo, pferUMF)
+fm24 <- occu(~ t ~ Mes.humedo, pferUMF)
+fm25 <- occu(~ t ~ Mes.seco, pferUMF)
+fm26 <- occu(~ t ~ Estacionalidad, pferUMF)
+fm27 <- occu(~ t ~ Cobertura.prom.250, pferUMF)
+fm28 <- occu(~ t ~ Cobertura.sd.250, pferUMF)
+fm29 <- occu(~ t ~ H.index.250, pferUMF)
+fm30 <- occu(~ t ~ Altura.prom.250, pferUMF)
+
+
+
+
+# Model names
+modelos <- fitList("p(.)psi(.)" = fm1, 
+              "p(hr)psi(Nubes)" = fm2, 
+              "p(hr)psi(NDVI)" = fm3,
+              "p(hr)psi(Altura)" = fm4,
+              "p(hr)psi(Cobertura)" = fm5,
+              "p(hr)psi(Precipitacion)" = fm6,
+              "p(hr)psi(Cuarto.seco)" = fm7,
+              "p(hr)psi(Cuarto.humedo)" = fm8,
+              "p(hr)psi(Mes.humedo)" = fm9,
+              "p(hr)psi(Mes.seco)" = fm10,
+              "p(hr)psi(Estacionalidad)" = fm11,
+              "p(hr)psi(Cobertura.prom.250)" = fm12,
+              "p(hr)psi(Cobertura.sd.250)" = fm13,
+              "p(hr)psi(H.index.250)" = fm14,
+              "p(hr)psi(Altura.prom.250)" = fm15,
+              "p(.)psi(Mes.seco)" = fm16, 
+              "p(t)psi(.)" = fm17, 
+              "p(t)psi(NDVI)" = fm18,
+              "p(t)psi(Altura)" = fm19,
+              "p(t)psi(Cobertura)" = fm20,
+              "p(t)psi(Precipitacion)" = fm21,
+              "p(t)psi(Cuarto.seco)" = fm22,
+              "p(t)psi(Cuarto.humedo)" = fm23,
+              "p(t)psi(Mes.humedo)" = fm24,
+              "p(t)psi(Mes.seco)" = fm25,
+              "p(t)psi(Estacionalidad)" = fm26,
+              "p(t)psi(Cobertura.prom.250)" = fm27,
+              "p(t)psi(Cobertura.sd.250)" = fm28,
+              "p(t)psi(H.index.250)" = fm29,
+              "p(t)psi(Altura.prom.250)" = fm30
+              )
+
+
+ms <- modSel(modelos)
+
+
+
+```
+
+# Models ordered by AIC
+ 
+```{r, print}
+print(ms)
+```
+ 
+# R Session Info 
+```{r sesion}
+sessionInfo()
+```
+ 
