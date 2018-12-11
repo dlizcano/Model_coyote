@@ -2,7 +2,6 @@
 
 ## Modified and used also in the paper: [Schank, C. J., M. V. Cove, M. J. Kelly, E. Mendoza, G. O’Farrill, R. Reyna-Hurtado, N. Meyer, C. A. Jordan, J. F. González-Maya, D. J. Lizcano, R. Moreno, M. T. Dobbins, V. Montalvo, C. Sáenz-Bolaños, E. C. Jimenez, N. Estrada, J. C. Cruz Díaz, J. Saenz, M. Spínola, A. Carver, J. Fort, C. K. Nielsen, F. Botello, G. Pozo Montuy, M. Rivero, J. A. de la Torre, E. Brenes-Mora, O. Godínez-Gómez, M. A. Wood, J. Gilbert, and J. A. Miller. 2017. Using a novel model approach to assess the distribution and conservation status of the endangered Baird’s tapir. Diversity and Distributions 23:1459–1471.](http://doi.wiley.com/10.1111/ddi.12631)
 
-
 1. Download all the covariate spatial layers, PB and SO data files and R code file
 
 2. Unarchive all files and save them in the same folder
