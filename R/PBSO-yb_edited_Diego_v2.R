@@ -19,7 +19,8 @@
 ## y.so - matrix of detection/non detection of the PA surveys (Camera trap data)
 ## so.occupancy - matrix with covariates that effect occupancy in the locations of PA survey sites
 ## so.detection - matrix with covariates that effect detection in the locations of PA survey sites in each survey
-###################################################################################################
+######################################################################################################
+###Canis latrans-V1. Gabriel Andrade Ponce###
 
 library(raster)
 library(fields)
@@ -33,18 +34,15 @@ source("R/functions.r") # read functions
 ####################################
 ### Get GBIF Data per species
 ####################################
-sp_in_GBIF <- occ_search(scientificName = "Thryophilus sernai", return='data')
-# sp_in_GBIF <- read.csv("data/PB_T_sernai_Depurado.csv") # read prescence points file
+sp_in_GBIF <- occ_search(scientificName = "Canis latrans", return='data')
+sp_in_GBIF <- read.csv("Cala_gbif.csv") # read prescence points file
 
 # Plot to check GBIF data... maybe some point tweeking required !
 # gbifmap(sp_in_GBIF, region = "Colombia") # plot in a world map
 
 # make spatial point
-sp_points <- SpatialPoints(cbind(sp_in_GBIF$decimalLongitude, 
-                           sp_in_GBIF$decimalLatitude))
-# make spatial point
-# sp_points <- SpatialPoints(cbind(sp_in_GBIF$LONGITUDE, 
-#                                  sp_in_GBIF$LATITUDE))
+sp_points <- SpatialPoints(cbind(sp_in_GBIF$longitude, 
+                           sp_in_GBIF$latitude))
 
 # put georeference
 proj4string(sp_points) <- CRS('+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0')
