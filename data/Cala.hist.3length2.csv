@@ -1,0 +1,17 @@
+Station,detection_history.o1,detection_history.o2,detection_history.o3,detection_history.o4,detection_history.o5,detection_history.o6,detection_history.o7,detection_history.o8,detection_history.o9,detection_history.o10,detection_history.o11
+CAM1,0,1,1,1,1,0,0,0,0,0,0
+CAM11,0,1,1,1,1,1,0,1,1,1,0
+CAM12,1,1,0,1,1,1,1,0,1,0,1
+CAM14,0,1,1,1,1,1,1,0,1,1,0
+CAM15,1,1,1,1,1,1,0,0,0,0,0
+CAM2,0,1,1,1,0,0,1,0,1,1,1
+CAM21,1,1,1,1,0,0,0,0,0,0,0
+CAM23,0,1,1,1,1,1,0,1,1,1,1
+CAM27,1,1,0,1,0,0,1,0,0,0,0
+CAM28,0,1,1,1,0,1,0,1,0,0,1
+CAM3,1,1,1,1,1,1,1,1,1,1,1
+CAM4,0,1,1,1,1,1,1,1,1,1,1
+CAM5,0,0,1,1,1,0,0,0,1,1,1
+CAM6,0,0,0,0,1,0,0,1,0,0,0
+CAM7,1,1,0,1,0,0,0,0,0,0,1
+CAM8,1,1,1,1,1,1,0,1,0,1,1

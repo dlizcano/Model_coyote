@@ -1,0 +1,12 @@
+********************************************** 
+ Beginning Spatial Thinning.
+ Script Started at: Fri Feb 01 12:26:32 2019
+
+Thinning Parameter Used (in km): 11
+Number of replicates of thinning script: 100
+********************************************** 
+ Beginning Spatial Thinning.
+ Script Started at: Fri Feb 01 12:52:43 2019
+
+Thinning Parameter Used (in km): 11
+Number of replicates of thinning script: 30

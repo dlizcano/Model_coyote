@@ -6,22 +6,28 @@
 
 fun_pr <- function(occu_capa, det_capa, model){
   L_occu <-(model$coefs$Value[1] +  # L pb
-             (occu_capa@layers[[1]] * model$coefs$Value[2]) + 
-             (occu_capa@layers[[2]] * model$coefs$Value[3]))# +
-             # (occu_capa@layers[[3]] * model$coefs$Value[4]) +
-             # (occu_capa@layers[[4]] * model$coefs$Value[5]) +
+             (occu_capa@layers[[1]] * model$coefs$Value[2])) + 
+             #(occu_capa@layers[[2]] * model$coefs$Value[3]) +
+             #(occu_capa@layers[[3]] * model$coefs$Value[4]) +
+             #(occu_capa@layers[[4]] * model$coefs$Value[5]))# +
              # (occu_capa@layers[[5]] * model$coefs$Value[6]) +
              # (occu_capa@layers[[6]] * model$coefs$Value[7]) +
              # (occu_capa@layers[[7]] * model$coefs$Value[8]) +
              # (occu_capa@layers[[8]] * model$coefs$Value[9])) 
   
-  L_det <-  (model$coefs$Value[10] + 
-             (det_capa@layers[[1]] * model$coefs$Value[11]) +
-             (det_capa@layers[[2]] * model$coefs$Value[12]))# +
-             # (det_capa@layers[[3]] * model$coefs$Value[13]) +
-             # (det_capa@layers[[4]] * model$coefs$Value[14]))
+  L_det <-  (model$coefs$Value[3] + 
+             (det_capa@layers[[1]] * model$coefs$Value[4]))# +
+             #(det_capa@layers[[2]] * model$coefs$Value[8]))# +
+             #(det_capa@layers[[3]] * model$coefs$Value[9]) +
+             #(det_capa@layers[[4]] * model$coefs$Value[10])
   
-  L_int <- exp(L_occu * L_det)
+  #L_detoc <-  (model$coefs$Value[11] + 
+               #(det_capa@layers[[1]] * model$coefs$Value[12]) +
+               #(det_capa@layers[[2]] * model$coefs$Value[13]) +
+               #(det_capa@layers[[3]] * model$coefs$Value[14]) +
+               #(det_capa@layers[[4]] * model$coefs$Value[15]))
+  
+  L_int <- (L_occu * L_det)#* L_detoc
   
     #sum(W.po %*% alpha) - sum(log(1 + exp(W.po %*% alpha))) - sum(mu*p)
   
@@ -34,21 +40,22 @@ fun_pr <- function(occu_capa, det_capa, model){
 ############################################
 
 # use the function to predict
-prediction <- fun_pr(occu_capa = s.occupancy, 
+prediction <- fun_pr(occu_capa = s.intensity, 
                      det_capa = s.detection, 
-                     model = poANDso.fit)
+                     model = so.fit)
 
 ### plogis function?
 prediction2 <- plogis(as.matrix(prediction))
+psi.raster[psi.raster<0.98] <- NA
 
 # Visualize output
-# plot(prediction) # scaled values
+plot(prediction) # scaled values
 psi.mat <- prediction2
 psi.raster <- raster(psi.mat)
 extent(psi.raster) <- extent(prediction)
 plot(psi.raster, main="integrated Likelihood") # transformed using plogis?
 plot(pb, add=T)
-# hist(psi.raster, xlab = 'integrated Likelihood')
+hist(psi.raster, xlab = 'integrated Likelihood')
 
 
 
